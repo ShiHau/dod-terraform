@@ -1,13 +1,13 @@
 terraform {
   # Assumes s3 bucket and dynamo DB table already set up
   # See /code/03-basics/aws-backend
-  backend "s3" {
-    bucket         = "devops-directive-tf-state"
-    key            = "04-variables-and-outputs/web-app/terraform.tfstate"
-    region         = "us-east-1"
-    dynamodb_table = "terraform-state-locking"
-    encrypt        = true
-  }
+  # backend "s3" {
+  #   bucket         = "devops-directive-tf-state"
+  #   key            = "04-variables-and-outputs/web-app/terraform.tfstate"
+  #   region         = "us-east-1"
+  #   dynamodb_table = "terraform-state-locking"
+  #   encrypt        = true
+  # }
 
   required_providers {
     aws = {
@@ -187,28 +187,28 @@ resource "aws_lb" "load_balancer" {
 
 }
 
-resource "aws_route53_zone" "primary" {
-  name = var.domain
-}
+# resource "aws_route53_zone" "primary" {
+#   name = var.domain
+# }
 
-resource "aws_route53_record" "root" {
-  zone_id = aws_route53_zone.primary.zone_id
-  name    = var.domain
-  type    = "A"
+# resource "aws_route53_record" "root" {
+#   zone_id = aws_route53_zone.primary.zone_id
+#   name    = var.domain
+#   type    = "A"
 
-  alias {
-    name                   = aws_lb.load_balancer.dns_name
-    zone_id                = aws_lb.load_balancer.zone_id
-    evaluate_target_health = true
-  }
-}
+#   alias {
+#     name                   = aws_lb.load_balancer.dns_name
+#     zone_id                = aws_lb.load_balancer.zone_id
+#     evaluate_target_health = true
+#   }
+# }
 
 resource "aws_db_instance" "db_instance" {
   allocated_storage   = 20
-  storage_type        = "standard"
+  storage_type        = "gp3"
   engine              = "postgres"
   engine_version      = "12"
-  instance_class      = "db.t2.micro"
+  instance_class      = "db.t3.micro"
   name                = var.db_name
   username            = var.db_user
   password            = var.db_pass
